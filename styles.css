@@ -1,474 +1,78 @@
-:root {
-  --bg:         #0a0c10;
-  --surface:    #0f1117;
-  --card:       #151820;
-  --border:     #1e2330;
-  --accent:     #00e5ff;
-  --accent-dim: #00e5ff22;
-  --green:      #39d353;
-  --text:       #c9d1d9;
-  --text-muted: #4a5568;
-  --text-dim:   #6b7280;
-  --tag-bg:     #1a1f2e;
-  --font-mono:  'Space Mono', monospace;
-  --font-sans:  'Syne', sans-serif;
-  --radius:     8px;
-  --transition: 0.25s ease;
-}
-
-/* ---------- RESET & BASE ---------- */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
+/* Базові налаштування */
 body {
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.7;
-  min-height: 100vh;
-  overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #e0e0e0;
+    background-color: #121212;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
 }
 
-/* ---------- BACKGROUND EFFECTS ---------- */
-/* Noise texture overlay — pseudo-element on body */
-.noise {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+/* Контейнер для резюме (Box Model) */
+.resume-container {
+    max-width: 800px;
+    background: #1e1e1e;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 1px solid #333;
 }
 
-/* Dot grid background */
-.grid-bg {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image: radial-gradient(circle, #1e2330 1px, transparent 1px);
-  background-size: 32px 32px;
-  opacity: 0.4;
-}
-
-/* ---------- LAYOUT ---------- */
-.wrapper {
-  position: relative;
-  z-index: 1;
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 3rem 2rem 4rem;
-}
-
-/* ---------- CODE ANNOTATION TAGS ---------- */
-/* These little <tag> annotations show CSS being used = great for lab work */
-.header-tag,
-.section-tag,
-.footer-tag {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.05em;
-  user-select: none;
-}
-
-.header-tag.closing,
-.section-tag.closing,
-.footer-tag.closing {
-  margin-top: 0.75rem;
-  margin-bottom: 0;
-}
-
-/* ---------- HEADER ---------- */
+/* Шапка */
 header {
-  padding: 2.5rem;
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 1.5rem;
-  position: relative;
-  overflow: hidden;
+    text-align: center;
+    border-bottom: 2px solid #00adb5;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
 }
 
-/* Accent glow in corner — decorative */
-header::before {
-  content: '';
-  position: absolute;
-  top: -60px;
-  right: -60px;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
-  pointer-events: none;
+header h1 {
+    color: #00adb5;
+    margin: 0;
+    font-size: 2.5em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
-.header-inner {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-/* Avatar box using Flexbox centering */
-.avatar-box {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent-dim);
-  border: 2px solid var(--accent);
-  border-radius: 50%;
-}
-
-.avatar-initials {
-  font-family: var(--font-mono);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.05em;
-}
-
-/* Status dot — uses :active-like green pulse */
-.status-dot {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 12px;
-  height: 12px;
-  background: var(--green);
-  border-radius: 50%;
-  border: 2px solid var(--surface);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(57, 211, 83, 0.5); }
-  50%       { box-shadow: 0 0 0 6px rgba(57, 211, 83, 0); }
-}
-
-.header-text {
-  flex: 1;
-}
-
-h1 {
-  font-family: var(--font-sans);
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 800;
-  line-height: 1.1;
-  color: #ffffff;
-  margin-bottom: 0.5rem;
-}
-
-h1 .accent {
-  color: var(--accent);
-}
-
-.subtitle {
-  font-size: 0.9rem;
-  color: var(--text-dim);
-  margin-bottom: 1rem;
-}
-
-.sep {
-  margin: 0 0.4em;
-  color: var(--border);
-}
-
-/* Badges — using inline-flex */
-.badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.2em 0.75em;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  background: var(--tag-bg);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  color: var(--text-dim);
-  letter-spacing: 0.04em;
-}
-
-.badge-green {
-  border-color: var(--green);
-  color: var(--green);
-  background: rgba(57, 211, 83, 0.08);
-}
-
-/* ---------- SECTIONS ---------- */
+/* Секції */
 section {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 2rem 2.5rem;
-  margin-bottom: 1.5rem;
-  transition: border-color var(--transition);
-}
-
-/* Pseudo-class: hover on section */
-section:hover {
-  border-color: #2a3045;
+    margin-bottom: 25px;
 }
 
 h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #ffffff;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+    color: #00adb5;
+    border-left: 4px solid #00adb5;
+    padding-left: 15px;
+    font-size: 1.5em;
+    background: rgba(0, 173, 181, 0.05);
 }
 
-.section-num {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--accent);
-  flex-shrink: 0;
+/* Списки та елементи (Flexbox для контактів) */
+ul {
+    list-style: none;
+    padding: 0;
 }
 
-/* ---------- CONTACT LIST ---------- */
-.contact-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+li {
+    margin-bottom: 10px;
 }
 
-.contact-list li {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.9rem;
+strong {
+    color: #eeeeee;
 }
 
-.contact-list .icon {
-  font-size: 1rem;
-  color: var(--accent);
-  width: 1.2em;
-  text-align: center;
-  flex-shrink: 0;
+/* Псевдокласи для інтерактивності */
+li:hover {
+    color: #00adb5;
+    transition: 0.3s;
 }
 
-.contact-list .label {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  width: 70px;
-  flex-shrink: 0;
-}
-
-.contact-list a {
-  color: var(--text);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: color var(--transition), border-color var(--transition);
-}
-
-/* Pseudo-class: :hover on link */
-.contact-list a:hover {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-
-/* ---------- CARDS (experience / education) ---------- */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.25rem 1.5rem;
-  border-left: 3px solid var(--accent);
-  transition: transform var(--transition), box-shadow var(--transition);
-}
-
-/* Pseudo-class: :hover on card */
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 229, 255, 0.06);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.card h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #ffffff;
-  margin-bottom: 0.2rem;
-}
-
-.company {
-  font-size: 0.85rem;
-  color: var(--text-dim);
-}
-
-.date-badge {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--accent);
-  background: var(--accent-dim);
-  padding: 0.25em 0.75em;
-  border-radius: 100px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.card-list {
-  list-style: none;
-  padding: 0;
-  margin-top: 0.5rem;
-}
-
-.card-list li {
-  font-size: 0.88rem;
-  color: var(--text);
-  padding-left: 1.2em;
-  position: relative;
-}
-
-/* Custom bullet using ::before pseudo-element */
-.card-list li::before {
-  content: '▸';
-  position: absolute;
-  left: 0;
-  color: var(--accent);
-  font-size: 0.75em;
-  top: 0.2em;
-}
-
-/* ---------- SKILLS GRID (CSS Grid Layout) ---------- */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.25rem;
-}
-
-.skill-group {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-  transition: border-color var(--transition);
-}
-
-/* Pseudo-class: :focus-within (якщо всередині є фокус) */
-.skill-group:hover {
-  border-color: #2a3045;
-}
-
-.skill-label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.6rem;
-}
-
-.skill-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-/* Tag selector by class */
-.tag {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  padding: 0.2em 0.6em;
-  background: var(--tag-bg);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text);
-  cursor: default;
-  transition: background var(--transition), color var(--transition), border-color var(--transition);
-}
-
-/* Pseudo-class: :hover on tag */
-.tag:hover {
-  background: var(--accent-dim);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-/* ---------- FOOTER ---------- */
+/* Футер */
 footer {
-  text-align: center;
-  padding: 1.5rem 2rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-
-footer p {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-/* ---------- RESPONSIVE (Media Query) ---------- */
-@media (max-width: 600px) {
-  .wrapper {
-    padding: 1.5rem 1rem 3rem;
-  }
-
-  .header-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  section {
-    padding: 1.5rem 1.25rem;
-  }
-
-  .card-header {
-    flex-direction: column;
-  }
-
-  .skills-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* ---------- SCROLLBAR STYLING ---------- */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.9em;
+    color: #777;
 }
