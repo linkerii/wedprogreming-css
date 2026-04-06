@@ -1,4 +1,3 @@
-// 1. Зберігання даних у localStorage
 const systemInfo = {
     browser: navigator.userAgent,
     platform: navigator.platform,
@@ -7,7 +6,6 @@ const systemInfo = {
 localStorage.setItem('userSystemInfo', JSON.stringify(systemInfo));
 
 window.onload = function() {
-    // Вивід інформації у футер
     const info = JSON.parse(localStorage.getItem('userSystemInfo'));
     const footer = document.querySelector('footer');
     if (footer) {
@@ -16,10 +14,8 @@ window.onload = function() {
         footer.appendChild(infoElement);
     }
 
-    // 2. Отримання коментарів (Варіант 4)
     loadComments();
 
-    // 3. Модальне вікно через 1 хвилину
     setTimeout(() => {
         const modal = document.getElementById('contactModal');
         if (modal) modal.style.display = 'block';
@@ -46,12 +42,10 @@ async function loadComments() {
     } catch (e) { console.log("Помилка API", e); }
 }
 
-// 4. Перемикач теми
 function toggleTheme() {
     document.body.classList.toggle('light-theme');
 }
 
-// Авто-тема за часом (Денна 07:00 - 21:00)
 const hour = new Date().getHours();
 if (hour >= 7 && hour < 21) {
     document.body.classList.add('light-theme');
